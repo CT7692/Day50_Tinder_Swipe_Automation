@@ -81,8 +81,7 @@ def check_for_interests(driver):
 
 def swipe(driver):
     action = ActionChains(driver)
-    match = check_for_interests(driver)
-    if match:
+    if match := check_for_interests(driver):
         action.key_down(Keys.RIGHT).key_up(Keys.RIGHT)
         action.perform()
     else:
@@ -108,8 +107,7 @@ def find_info_button(driver):
     desired_class = \
         "P(0) Trsdu($normal) Sq(28px) Bdrs(50%) Cur(p) Ta(c) Scale(1.2):h Mb(12px)--ml Mb(8px) focus-button-style"
     for element in elements:
-        element_class = element.get_attribute("class")
-        if element_class == desired_class:
+        if (element_class := element.get_attribute("class")) == desired_class:
             desired_element = element
             break
     info_button = desired_element.find_element(By.TAG_NAME, value="svg")
