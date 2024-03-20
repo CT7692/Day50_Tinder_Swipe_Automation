@@ -27,6 +27,7 @@ def open_browser():
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_experimental_option("detach", True)
     driver = webdriver.Chrome(options=chrome_options)
+
     return driver
 
 def tinder_login(driver):
@@ -37,7 +38,7 @@ def tinder_login(driver):
     initial_transition(driver)
     facebook_button = driver.find_element(
         By.XPATH,
-        value='//*[@id="s1746112904"]/main/div[1]/div/div[1]/div/div/div[2]/div[2]/span/div[2]/button/div[2]/div[2]/div/div')
+        value='//*[@id="q-1087274393"]/main/div/div/div[1]/div/div/div[2]/div[2]/span/div[2]/button/div[2]/div[2]/div/div')
     facebook_button.click()
     initial_transition(driver)
     main_window = driver.window_handles[0]
@@ -65,7 +66,9 @@ def accept_settings(driver):
 def check_for_interests(driver):
     my_passions = ["music", "movies", "tattoos","coffee", "travel",
                          "horror movies", "concerts", "working out", "reading",
-                         "wine", "heavy metal", "live music", "sushi", "anime", "gym"]
+                         "wine", "heavy metal", "hip hop", "live music", "sushi", "anime", "gym",
+                   "xbox", "ice cream"]
+
     interests_match = False
     info = find_info_button(driver)
     action = ActionChains(driver)
@@ -77,28 +80,37 @@ def check_for_interests(driver):
         if keyword in my_passions:
             interests_match = True
             break
+
     return interests_match
 
-def swipe(driver):
+def swipe(driver, counter):
     action = ActionChains(driver)
     match = check_for_interests(driver)
     if match:
+
         action.key_down(Keys.RIGHT).key_up(Keys.RIGHT)
         action.perform()
     else:
         action.key_down(Keys.LEFT).key_up(Keys.LEFT)
         action.perform()
     transition()
+    if counter == 5:
+        dismiss_installation(driver, counter)
 
 def sequence(driver):
+    counter = 0
     start = int(time.time())
     end = int(time.time() + RUNTIME)
+
     while start < end:
-        swipe(driver)
+        swipe(driver, counter)
+        counter += 1
         increment = int(time.time())
         difference = increment - start
+
         if difference >= 1:
             start += difference
+
         if start >= end:
             messagebox.showinfo(title="Finished", message="Automated swiping process complete.")
 
@@ -107,19 +119,28 @@ def find_info_button(driver):
     elements = driver.find_elements(By.TAG_NAME, value="button")
     desired_class = \
         "P(0) Trsdu($normal) Sq(28px) Bdrs(50%) Cur(p) Ta(c) Scale(1.2):h Mb(12px)--ml Mb(8px) focus-button-style"
+
     for element in elements:
         element_class = element.get_attribute("class")
         if element_class == desired_class:
             desired_element = element
             break
     info_button = desired_element.find_element(By.TAG_NAME, value="svg")
+
     return info_button
+
+def dismiss_installation(my_driver, counter):
+        not_interested = my_driver.find_element(
+            By.XPATH,
+            value='//*[@id="q-1087274393"]/main/div[1]/div[2]/button[2]/div[2]/div[2]')
+        not_interested.click()
 
 
 chrome_driver = open_browser()
 
 try:
     chrome_driver.get("https://www.tinder.com")
+    chrome_driver.implicitly_wait(30)
     tinder_login(chrome_driver)
     accept_settings(chrome_driver)
     time.sleep(10)
