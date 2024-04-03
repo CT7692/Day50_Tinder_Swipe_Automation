@@ -37,8 +37,8 @@ def tinder_login(driver):
     login.click()
     initial_transition(driver)
     facebook_button = driver.find_element(
-        By.XPATH,
-        value='//*[@id="q-1087274393"]/main/div/div/div[1]/div/div/div[2]/div[2]/span/div[2]/button/div[2]/div[2]/div/div')
+        By.CSS_SELECTOR,
+        value='.Typs\(button-1\)')
     facebook_button.click()
     initial_transition(driver)
     main_window = driver.window_handles[0]
@@ -56,9 +56,9 @@ def tinder_login(driver):
 
 
 def accept_settings(driver):
-    accept = driver.find_element(By.CLASS_NAME, value="l17p5q9z")
+    accept = driver.find_element(By.CSS_SELECTOR, value=".c9iqosj")
     accept.click()
-    enable = driver.find_element(By.CLASS_NAME, value="l17p5q9z")
+    enable = driver.find_element(By.CSS_SELECTOR, value=".c9iqosj")
     enable.click()
     driver.implicitly_wait(10)
 
@@ -67,7 +67,7 @@ def check_for_interests(driver):
     my_passions = ["music", "movies", "tattoos","coffee", "travel",
                          "horror movies", "concerts", "working out", "reading",
                          "wine", "heavy metal", "hip hop", "live music", "sushi", "anime", "gym",
-                   "xbox", "ice cream"]
+                   "xbox", "ice cream", "pro-choice"]
 
     interests_match = False
     info = find_info_button(driver)
@@ -130,9 +130,7 @@ def find_info_button(driver):
     return info_button
 
 def dismiss_installation(my_driver, counter):
-        not_interested = my_driver.find_element(
-            By.XPATH,
-            value='//*[@id="q-1087274393"]/main/div[1]/div[2]/button[2]/div[2]/div[2]')
+        not_interested = my_driver.find_elements(By.CSS_SELECTOR,value='.c9iqosj')[1]
         not_interested.click()
 
 
