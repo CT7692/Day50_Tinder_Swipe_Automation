@@ -70,9 +70,9 @@ def check_for_interests(driver):
                    "xbox", "ice cream", "pro-choice"]
 
     interests_match = False
-    info = find_info_button(driver)
     action = ActionChains(driver)
-    action.move_to_element(info).click().perform()
+    action.key_down(Keys.UP).key_up(Keys.UP)
+    action.perform()
     transition()
     elements = driver.find_elements(By.CSS_SELECTOR, value=".Typs\(body-2-regular\)")
     keywords = [element.text.lower() for element in elements]
@@ -115,20 +115,6 @@ def sequence(driver):
             messagebox.showinfo(title="Finished", message="Automated swiping process complete.")
 
 
-def find_info_button(driver):
-    elements = driver.find_elements(By.TAG_NAME, value="button")
-    desired_class = \
-        "P(0) Trsdu($normal) Sq(28px) Bdrs(50%) Cur(p) Ta(c) Scale(1.2):h Mb(12px)--ml Mb(8px) focus-button-style"
-
-    for element in elements:
-        element_class = element.get_attribute("class")
-        if element_class == desired_class:
-            desired_element = element
-            break
-    info_button = desired_element.find_element(By.TAG_NAME, value="svg")
-
-    return info_button
-
 def dismiss_installation(my_driver, counter):
         not_interested = my_driver.find_elements(By.CSS_SELECTOR,value='.c9iqosj')[1]
         not_interested.click()
@@ -142,7 +128,6 @@ try:
     tinder_login(chrome_driver)
     accept_settings(chrome_driver)
     time.sleep(10)
-    find_info_button(chrome_driver)
     sequence(chrome_driver)
 except exc.NoSuchElementException as exc:
     print(exc.msg)
